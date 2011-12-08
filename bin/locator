@@ -3,9 +3,6 @@
 SELF=locator
 CONF=$1
 
-exec 1>/tmp/$SELF.log 2>&1
-set -x
-
 location="Automatic"
 reason="Default"
 
