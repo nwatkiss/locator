@@ -1,0 +1,58 @@
+Locator
+=======
+
+Automatically set your Mac's location based on the currently-joined SSID, or
+the ability to resolve one or more hostnames.
+
+locator works by running as a daemon, and waking up every time your computer's
+network interface(s) change state in some way. It runs through each configured
+location detection snippet, and determines what Location to select. It sets
+your Mac's Location to the most appropriate choice, or to "Automatic" if
+nothing matched.
+
+
+Installation
+------------
+
+As root:
+
+   1. Clone or copy locator to /Library/Locator
+   2. Copy 'ca.watkiss.locator.plist' to /Library/LaunchDaemons
+   3. Start locator: sudo launchctl load -w /Library/LaunchDaemons/ca.watkiss.locator.plist
+   4. Add one or more Location snippets (see below)
+
+If you choose to install locator to a directory other than /Library/Locator,
+you will need to adjust the path in the plist file.
+
+
+Configuration
+-------------
+
+Locations are configured by creating subdirectories in /Library/Locator. For
+example, if you want Locator to switch your Mac's Location to "Work" based on
+some criteria, you should create a directory called "Work":
+
+   /Library/Locator/Work
+
+Inside each Location directory, locator looks for two files:
+
+   - SSID: contains wireless SSIDs, one per line. If the Mac is
+     currently connected to one of these SSIDs, locator will select this
+     location.
+
+   - DNS: contains DNS names to resolve, one per line. They do not have to be
+     fully-qualified; they just have to resolve. If any of the listed
+     hostnames resolve, locator will select this location.
+
+
+Author
+======
+
+Neil Watkiss <neil.watkiss@gmail.com>
+
+Copyright (C) 2011, Neil Watkiss.
+
+All Rights Reserved. This package is free software. It may be used,
+redistributed, and/or modified under the same terms as Perl.
+
+(see http://dev.perl.org/licenses/artistic.html)
