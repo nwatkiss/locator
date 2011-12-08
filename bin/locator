@@ -1,0 +1,45 @@
+#!/bin/bash
+
+SELF=locator
+CONF=$1
+
+exec 1>/tmp/$SELF.log 2>&1
+set -x
+
+location="Automatic"
+reason="Default"
+
+SSID=$(/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport -I | perl -ne 'print $1 if / SSID: (.*)/')
+
+for conf in $CONF/*; do
+    matched=
+
+    if [ -z "$matched" -a -f "$conf/SSID" -a -n "$SSID" ]; then
+	while read ssid; do
+	    if [ "$SSID" = "$ssid" ]; then
+		location="${conf##*/}"
+		matched=true
+		reason="SSID=$SSID ($conf/SSID)"
+		break
+	    fi
+	done < "$conf/SSID"
+    fi
+
+    if [ -z "$matched" -a -f "$conf/DNS" ]; then
+	while read name match; do
+	    for ip in $(host -t a $name 2>/dev/null | perl -lne 'print $1 if /address (.*)/'); do
+		if [ "$ip" = "$match" -o "$match" = "*" ]; then
+		    location="${conf##*/}"
+		    matched=true
+		    reason="$name = $ip ($conf/DNS)"
+		    break
+		fi
+	    done
+	done < "$conf/DNS"
+    fi
+
+    if [ -n "$matched" ]; then break; fi
+done
+
+logger -i -p daemon.notice -t ${SELF} "setting location to ${location}: ${reason}"
+exit 0
