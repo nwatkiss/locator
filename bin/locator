@@ -38,5 +38,12 @@ for conf in $CONF/*; do
     if [ -n "$matched" ]; then break; fi
 done
 
-logger -i -p daemon.notice -t ${SELF} "setting location to ${location}: ${reason}"
+current=$(scselect | perl -lne 'print $1 if /^ [*] .*[(](.*)[)]$/')
+if [ "$current" != "$location" ]; then
+    logger -i -p daemon.notice -t ${SELF} "SETTING location ${location} (${reason})"
+    scselect $location
+else
+    logger -i -p daemon.notice -t ${SELF} "already location ${location} (${reason})"
+fi
+
 exit 0
