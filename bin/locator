@@ -5,6 +5,7 @@ CONF=$1
 
 location="Automatic"
 reason="Default"
+start=$(perl -MTime::HiRes=time -e 'print time')
 
 SSID=$(/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport -I | perl -ne 'print $1 if / SSID: (.*)/')
 
@@ -46,4 +47,6 @@ else
     logger -i -p daemon.notice -t ${SELF} "already location ${location} (${reason})"
 fi
 
+# sleep for up to 11 seconds to avoid launchd thinking we've died
+perl -MTime::HiRes -e 'my$used=time()-shift;sleep(11-$used)if$used<11' $start
 exit 0

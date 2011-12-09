@@ -6,7 +6,7 @@
 	<key>KeepAlive</key>
 	<false/>
 	<key>Label</key>
-	<string>github.com.nwatkiss.locator</string>
+	<string>com.github.nwatkiss.locator</string>
 	<key>ProgramArguments</key>
 	<array>
 		<string>INSTALLDIR/bin/locator</string>
